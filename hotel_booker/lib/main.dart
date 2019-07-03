@@ -6,11 +6,13 @@ import 'package:hotel_booker/CustomShapeClipper.dart';
 import 'package:hotel_booker/choice_chip.dart';
 import 'package:hotel_booker/choice_chip.dart' as prefix1;
 import 'package:hotel_booker/city_card.dart';
+import 'package:hotel_booker/custom_appbar.dart';
+import 'package:hotel_booker/flights_list.dart';
 
 void main() => runApp(MyApp());
 
-Color firstColor = Colors.deepOrangeAccent;
-Color secondColor = Colors.orange[600];
+Color firstColor = Color(0xffff6337);
+Color secondColor = Color(0xffffa323);
 
 ThemeData appTheme = ThemeData(
   primaryColor: Colors.deepOrangeAccent,
@@ -20,7 +22,7 @@ ThemeData appTheme = ThemeData(
 List<String> locations = ['Boston (BOS)', 'New York City (JFK)'];
 TextStyle dropdownLabelStyle = TextStyle(color: Colors.white, fontSize: 16.0);
 TextStyle dropdownMenuItemStyle =
-    TextStyle(color: Colors.black, fontSize: 18.0);
+    TextStyle(color: Colors.black, fontSize: 16.0);
 TextStyle viewAllStyle =
     TextStyle(color: appTheme.primaryColor, fontSize: 14.0);
 
@@ -40,11 +42,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          TopClip(),
-          bottomScreen
-        ],
+      bottomNavigationBar: CustomAppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            TopClip(),
+            bottomScreen(context)
+          ],
+        ),
       ),
     );
   }
@@ -66,13 +71,13 @@ class _TopClipState extends State<TopClip> {
         ClipPath(
           clipper: CustomShapeClipper(),
           child: Container(
-            height: 350.0,
+            height: MediaQuery.of(context).size.height*0.5,
             decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [firstColor, secondColor])),
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  height: 25.0,
+                  height: MediaQuery.of(context).size.height*0.025,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -82,7 +87,7 @@ class _TopClipState extends State<TopClip> {
                         Icons.location_on,
                         color: Colors.white,
                       ),
-                      SizedBox(width: 16.0),
+                      SizedBox(width: MediaQuery.of(context).size.width*.005),
                       PopupMenuButton(
                         onSelected: (index) {
                           setState(() {
@@ -128,18 +133,18 @@ class _TopClipState extends State<TopClip> {
                   ),
                 ),
                 SizedBox(
-                  height: 25.0,
+                  height: MediaQuery.of(context).size.height*0.01,
                 ),
                 Text(
                   'Where would\nyou like to go?',
                   style: TextStyle(
-                      fontSize: 26.0,
+                      fontSize: 22.0,
                       color: Colors.white,
-                      fontWeight: FontWeight.w600),
+                      ),
                   textAlign: prefix0.TextAlign.center,
                 ),
                 SizedBox(
-                  height: 25.0,
+                  height: MediaQuery.of(context).size.height*0.04,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 32.0),
@@ -152,19 +157,23 @@ class _TopClipState extends State<TopClip> {
                       cursorColor: appTheme.primaryColor,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
-                              horizontal: 32.0, vertical: 14.0),
+                              horizontal: 25.0, vertical: 14.0),
                           suffixIcon: Material(
-                            elevation: 2.0,
+                            elevation: 3.0,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(30.0)),
-                            child: Icon(Icons.search),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> FlightsListing()));
+                              },
+                              child: Icon(Icons.search)),
                           ),
                           border: InputBorder.none),
                     ),
                   ),
                 ),
                 SizedBox(
-                  height: 20.0,
+                  height: MediaQuery.of(context).size.height*0.025,
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -200,35 +209,45 @@ class _TopClipState extends State<TopClip> {
   }
 }
 
-var bottomScreen = Container(
+bottomScreen(BuildContext context) => Container(
+  height: MediaQuery.of(context).size.height*0.4, 
   child: Column(
     children: <Widget>[
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0,vertical: 8.0),
+      Container(
+        height: MediaQuery.of(context).size.height*0.06,
+        padding: EdgeInsets.symmetric(horizontal: 20.0,vertical:MediaQuery.of(context).size.height*0.01),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(
-              "Currently Watched Items",
-              style: dropdownMenuItemStyle,
+            FittedBox(
+              fit: BoxFit.fitHeight,
+              child: Text(
+                "Currently Watched Items",
+                style: dropdownMenuItemStyle,
+              ),
             ),
             Spacer(),
-            Text(
-              "VIEW ALL(12)",
-              style: viewAllStyle,
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.fitHeight,
+                child: Text(
+                  "VIEW ALL(12)",
+                  style: viewAllStyle,
+                ),
+              ),
             ),
           ],
         ),
       ),
-      SizedBox(height: 20.0,),
+      SizedBox(height: MediaQuery.of(context).size.height*0.005,),
       Container(
-        height: 210.0,
+        height: MediaQuery.of(context).size.height*0.335,
         child: ListView(
           scrollDirection: Axis.horizontal,
           children: cityCards
         ),
-      )
+      ),
     ],
   ),
 );
